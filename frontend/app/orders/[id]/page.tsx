@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import orderService from '@/lib/orderService';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
+import AssignmentModal from '@/components/AssignmentModal';
 import { motion } from 'framer-motion';
 import { FadeIn, ScaleIn, SlideIn, StaggerChildren } from '@/components/animations';
 import { 
@@ -19,7 +20,8 @@ import {
   MdAccessTime,
   MdNotes,
   MdAssignment,
-  MdTimeline
+  MdTimeline,
+  MdPersonAdd
 } from 'react-icons/md';
 
 interface Order {
@@ -62,6 +64,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAssignmentModal, setShowAssignmentModal] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -195,7 +198,7 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <FadeIn>
@@ -211,7 +214,7 @@ export default function OrderDetailPage() {
                 Back to Orders
               </motion.button>
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
+                <div className="p-3 bg-blue-600 dark:bg-blue-600 rounded-xl shadow-lg">
                   <MdShoppingCart className="text-3xl text-white" />
                 </div>
                 <div>
@@ -240,7 +243,7 @@ export default function OrderDetailPage() {
                   onClick={handleDelete}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg hover:shadow-2xl transition-shadow flex items-center gap-2"
+                  className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg hover:shadow-2xl transition-shadow flex items-center gap-2"
                 >
                   <MdDelete className="text-lg" />
                   Delete
@@ -255,7 +258,7 @@ export default function OrderDetailPage() {
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
             <ScaleIn delay={0.1}>
-              <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                     <MdShoppingCart className="text-2xl text-blue-600 dark:text-blue-400" />
@@ -289,7 +292,7 @@ export default function OrderDetailPage() {
 
             {/* Product Info */}
             <ScaleIn delay={0.2}>
-              <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                     <MdInventory className="text-2xl text-purple-600 dark:text-purple-400" />
@@ -316,7 +319,7 @@ export default function OrderDetailPage() {
             {/* Notes */}
             {order.notes && (
               <ScaleIn delay={0.3}>
-                <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                       <MdNotes className="text-2xl text-green-600 dark:text-green-400" />
@@ -333,7 +336,7 @@ export default function OrderDetailPage() {
           <div className="space-y-6">
             {/* Assignment Info */}
             <ScaleIn delay={0.15}>
-              <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
                     <MdAssignment className="text-2xl text-indigo-600 dark:text-indigo-400" />
@@ -345,7 +348,7 @@ export default function OrderDetailPage() {
                     <label className="block text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">Assigned To</label>
                     <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <MdPerson className="text-xl text-blue-600 dark:text-blue-400" />
-                      <div>
+                      <div className="flex-1">
                         <p className="font-semibold text-gray-900 dark:text-gray-100">
                           {order.assigned_to?.username || 'Unassigned'}
                         </p>
@@ -354,6 +357,17 @@ export default function OrderDetailPage() {
                         )}
                       </div>
                     </div>
+                    {(user?.role === 'admin' || user?.role === 'manager') && (
+                      <motion.button
+                        onClick={() => setShowAssignmentModal(true)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full mt-3 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors"
+                      >
+                        <MdPersonAdd className="text-lg" />
+                        {order.assigned_to ? 'Reassign Order' : 'Assign Order'}
+                      </motion.button>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">Created By</label>
@@ -368,7 +382,7 @@ export default function OrderDetailPage() {
 
             {/* Dates */}
             <ScaleIn delay={0.25}>
-              <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                     <MdTimeline className="text-2xl text-orange-600 dark:text-orange-400" />
@@ -423,6 +437,15 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Assignment Modal */}
+      <AssignmentModal
+        isOpen={showAssignmentModal}
+        onClose={() => setShowAssignmentModal(false)}
+        orderId={orderId}
+        currentAssignee={order.assigned_to}
+        onSuccess={fetchOrder}
+      />
     </div>
   );
 }

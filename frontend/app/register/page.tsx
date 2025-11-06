@@ -102,7 +102,7 @@ export default function RegisterPage() {
 
         {/* Register Card */}
         <ScaleIn delay={0.2}>
-          <div className="glass rounded-2xl shadow-2xl p-8 space-y-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6">
             {/* Error Message */}
             {error && (
               <ErrorMessage 

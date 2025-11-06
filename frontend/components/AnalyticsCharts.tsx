@@ -13,7 +13,7 @@ interface OrderVolumeChartProps {
 export function OrderVolumeChart({ data, title = 'Order Volume Over Time' }: OrderVolumeChartProps) {
   return (
     <ScaleIn delay={0.1}>
-      <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
             <MdTrendingUp className="text-2xl text-blue-600 dark:text-blue-400" />
@@ -117,7 +117,7 @@ export function StatusDistributionChart({ data, title = 'Order Status Distributi
 
   return (
     <ScaleIn delay={0.2}>
-      <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
             <MdPieChart className="text-2xl text-purple-600 dark:text-purple-400" />
@@ -169,7 +169,7 @@ export function WorkerProductivityChart({ data, title = 'Worker Productivity' }:
 
   return (
     <ScaleIn delay={0.3}>
-      <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
+  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
             <MdBarChart className="text-2xl text-green-600 dark:text-green-400" />

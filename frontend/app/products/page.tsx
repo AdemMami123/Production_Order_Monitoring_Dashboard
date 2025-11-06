@@ -156,7 +156,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <FadeIn direction="down">
@@ -202,7 +202,7 @@ export default function ProductsPage() {
                 onClick={() => setShowCreateModal(true)}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
                 <MdAddCircle className="text-xl" />
                 Add Product
@@ -220,7 +220,7 @@ export default function ProductsPage() {
           <ErrorMessage message={error} onRetry={fetchProducts} />
         ) : products.length === 0 ? (
           <ScaleIn delay={0.2}>
-            <div className="glass dark:glass-dark rounded-2xl shadow-xl p-16 text-center border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-16 text-center border border-gray-200 dark:border-gray-700">
               <MdInventory className="mx-auto text-6xl text-gray-300 dark:text-gray-600 mb-4" />
               <p className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No products found</p>
               <p className="text-gray-500 dark:text-gray-400">Create your first product to get started</p>
@@ -237,7 +237,7 @@ export default function ProductsPage() {
                     visible: { opacity: 1, scale: 1 },
                   }}
                   whileHover={{ y: -4, scale: 1.02 }}
-                  className={`glass dark:glass-dark rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all ${
+                  className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all ${
                     !product.is_active ? 'opacity-60' : ''
                   }`}
                 >
@@ -308,29 +308,29 @@ export default function ProductsPage() {
           </StaggerChildren>
         ) : (
           <ScaleIn delay={0.2}>
-            <div className="glass dark:glass-dark rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
+                  <thead className="bg-gray-800 dark:bg-gray-900">
                     <tr>
                       {['Product Name', 'Reference', 'Unit', 'Description', 'Status', 'Actions'].map((header) => (
                         <th
                           key={header}
-                          className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                          className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider"
                         >
                           {header}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {products.map((product, index) => (
                       <motion.tr
                         key={product._id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.03 }}
-                        className={`hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors ${
+                        className={`hover:bg-green-50 dark:hover:bg-gray-700 transition-colors ${
                           !product.is_active ? 'opacity-60' : ''
                         }`}
                       >
@@ -341,12 +341,12 @@ export default function ProductsPage() {
                           <span className="text-sm font-mono text-blue-600 dark:text-blue-400">{product.reference}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-lg">
                             {product.unit}
                           </span>
                         </td>
                         <td className="px-6 py-4 max-w-xs">
-                          <span className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                          <span className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                             {product.description || '-'}
                           </span>
                         </td>
@@ -418,7 +418,7 @@ export default function ProductsPage() {
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="glass dark:glass-dark rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-200 dark:border-gray-700"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-200 dark:border-gray-700"
               >
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -512,7 +512,7 @@ export default function ProductsPage() {
                       type="submit"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all"
+                      className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all"
                     >
                       {editingProduct ? 'Update Product' : 'Create Product'}
                     </motion.button>

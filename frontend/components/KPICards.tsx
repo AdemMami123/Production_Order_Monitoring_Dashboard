@@ -54,7 +54,7 @@ export function KPICard({ title, value, subtitle, icon, color, delay = 0 }: KPIC
     <ScaleIn delay={delay}>
       <motion.div
         whileHover={{ y: -4, scale: 1.02 }}
-        className="glass dark:glass-dark rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all"
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all"
       >
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">

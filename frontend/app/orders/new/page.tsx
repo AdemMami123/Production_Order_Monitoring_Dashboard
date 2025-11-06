@@ -136,7 +136,7 @@
 
        {/* Form */}
        <ScaleIn delay={0.15}>
-         <div className="glass rounded-2xl shadow-2xl p-6">
+         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6">
            {error && (
              <div className="mb-6">
                <ErrorMessage message={error} onDismiss={() => setError('')} />

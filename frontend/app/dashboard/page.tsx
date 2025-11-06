@@ -277,7 +277,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Welcome Header */}
         <FadeIn direction="down">
@@ -356,7 +356,7 @@ export default function Dashboard() {
 
                 {/* Analytics Filters */}
                 <div className="flex gap-3">
-                  <div className="flex items-center gap-2 glass dark:glass-dark rounded-xl p-1 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
                     <MdFilterList className="text-gray-400 ml-2" />
                     <select
                       value={timeInterval}
@@ -370,7 +370,7 @@ export default function Dashboard() {
                   </div>
 
                   {workerProductivityData.length > 0 && (
-                    <div className="flex items-center gap-2 glass dark:glass-dark rounded-xl p-1 border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
                       <MdPeople className="text-gray-400 ml-2" />
                       <select
                         value={selectedWorkerId}
@@ -425,7 +425,7 @@ export default function Dashboard() {
 
         {/* Recent Orders Section */}
         <ScaleIn delay={0.6}>
-          <div className="glass dark:glass-dark rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-200 dark:border-gray-700 gap-4">
               <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                 Recent Orders
@@ -451,19 +451,19 @@ export default function Dashboard() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-800/50">
+                  <thead className="bg-gray-800 dark:bg-gray-900">
                     <tr>
                       {['Order #', 'Product', 'Status', 'Priority', 'Assigned To', 'Deadline', 'Qty'].map((header) => (
                         <th
                           key={header}
-                          className="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
+                          className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider"
                         >
                           {header}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {recentOrders.map((order, index) => (
                       <motion.tr
                         key={order._id}
@@ -471,8 +471,8 @@ export default function Dashboard() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 + index * 0.05 }}
                         onClick={() => router.push(`/orders/${order._id}`)}
-                        className="hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-colors"
-                        whileHover={{ scale: 1.01 }}
+                        className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                        whileHover={{ scale: 1.002 }}
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
@@ -483,7 +483,7 @@ export default function Dashboard() {
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {order.product_id?.name || 'N/A'}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
                             {order.product_id?.reference}
                           </div>
                         </td>
@@ -497,12 +497,12 @@ export default function Dashboard() {
                             {priorityToLabel(order.priority as any).toUpperCase()}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                           {order.assigned_to?.username || (
-                            <span className="text-gray-400 italic">Unassigned</span>
+                            <span className="text-gray-500 dark:text-gray-400 italic">Unassigned</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                           {formatDate(order.deadline)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

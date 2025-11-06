@@ -75,7 +75,7 @@ export default function LoginPage() {
 
         {/* Login Card */}
         <ScaleIn delay={0.2}>
-          <div className="glass rounded-2xl shadow-2xl p-8 space-y-6">
+          <div className=" rounded-2xl shadow-2xl p-8 space-y-6">
             {/* Error Message */}
             {error && (
               <ErrorMessage 
@@ -186,7 +186,7 @@ export default function LoginPage() {
 
         {/* Test Credentials */}
         <SlideIn direction="up" delay={0.4}>
-          <div className="glass rounded-xl p-4 space-y-2">
+          <div className=" rounded-xl p-4 space-y-2">
             <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
               <MdSecurity className="text-lg text-blue-500" />
               Test Credentials

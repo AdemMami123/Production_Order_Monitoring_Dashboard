@@ -1,4 +1,6 @@
+
 'use client';
+
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -8,15 +10,15 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import { FadeIn, ScaleIn, StaggerChildren } from '@/components/animations';
 import { motion } from 'framer-motion';
-import { 
-  MdAddCircle, 
-  MdSearch, 
-  MdFilterList, 
-  MdClear, 
+import {
+  MdAddCircle,
+  MdSearch,
+  MdFilterList,
+  MdClear,
   MdShoppingCart,
   MdVisibility,
   MdCalendarToday,
-  MdPerson
+  MdPerson,
 } from 'react-icons/md';
 
 interface Order {
@@ -33,8 +35,7 @@ interface Order {
   };
   status: string;
   quantity: number;
-    // priority can be a number (from backend) or a string in frontend
-    priority: number | string;
+  priority: number | string;
   deadline: string;
   created_at: string;
 }
@@ -42,10 +43,11 @@ interface Order {
 export default function OrdersPage() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   // Filters
   const [statusFilter, setStatusFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,6 +63,7 @@ export default function OrdersPage() {
     if (isAuthenticated) {
       fetchOrders();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, statusFilter, searchQuery, priorityFilter]);
 
   const fetchOrders = async () => {
@@ -98,17 +101,15 @@ export default function OrdersPage() {
         return 'bg-gray-100 text-gray-800';
     }
   };
-  // Normalize priority input (number or string) to a label: 'low'|'medium'|'high'
+
   const priorityToLabel = (p: number | string) => {
     if (typeof p === 'number') {
-      // map numbers to labels (common mapping used in UI)
       if (p <= 1) return 'low';
       if (p <= 3) return 'medium';
       return 'high';
     }
     const lowered = String(p).toLowerCase();
     if (['low', 'medium', 'high'].includes(lowered)) return lowered;
-    // fallback: try to parse numeric strings
     const n = Number(p);
     if (!isNaN(n)) {
       if (n <= 1) return 'low';
@@ -133,6 +134,7 @@ export default function OrdersPage() {
   };
 
   const formatDate = (dateString: string) => {
+    if (!dateString) return '—';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
@@ -152,7 +154,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <FadeIn direction="down">
@@ -162,16 +164,15 @@ export default function OrdersPage() {
                 <MdShoppingCart className="text-blue-500" />
                 Production Orders
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2 text-lg">
-                Manage and track all production orders
-              </p>
+              <p className="text-gray-600 dark:text-gray-400 mt-2 text-lg">Manage and track all production orders</p>
             </div>
+
             {(user?.role === 'admin' || user?.role === 'manager') && (
               <motion.button
                 onClick={() => router.push('/orders/new')}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
                 <MdAddCircle className="text-xl" />
                 Create Order
@@ -182,11 +183,12 @@ export default function OrdersPage() {
 
         {/* Filters */}
         <ScaleIn delay={0.1}>
-          <div className="glass dark:glass-dark rounded-2xl shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+          <div className=" rounded-2xl shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2 mb-4">
               <MdFilterList className="text-2xl text-blue-500" />
               <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Filters</h2>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -201,10 +203,9 @@ export default function OrdersPage() {
                   className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  Status
-                </label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Status</label>
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
@@ -218,10 +219,9 @@ export default function OrdersPage() {
                   <option value="cancelled">Cancelled</option>
                 </select>
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  Priority
-                </label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Priority</label>
                 <select
                   value={priorityFilter}
                   onChange={(e) => setPriorityFilter(e.target.value)}
@@ -233,6 +233,7 @@ export default function OrdersPage() {
                   <option value="low">Low</option>
                 </select>
               </div>
+
               <div className="flex items-end">
                 <motion.button
                   onClick={clearFilters}
@@ -257,7 +258,7 @@ export default function OrdersPage() {
           <ErrorMessage message={error} onRetry={fetchOrders} />
         ) : (
           <ScaleIn delay={0.2}>
-            <div className="glass dark:glass-dark rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
               {orders.length === 0 ? (
                 <div className="p-16 text-center">
                   <MdShoppingCart className="mx-auto text-6xl text-gray-300 dark:text-gray-600 mb-4" />
@@ -267,80 +268,92 @@ export default function OrdersPage() {
               ) : (
                 <>
                   <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
+                    <table className="w-full table-fixed">
+                      <colgroup>
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '30%' }} />
+                        <col style={{ width: '8%' }} />
+                        <col style={{ width: '8%' }} />
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '6%' }} />
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '12%' }} />
+                      </colgroup>
+
+                      <thead className="bg-gray-800 dark:bg-gray-900">
                         <tr>
-                          {['Order #', 'Product', 'Status', 'Priority', 'Assigned To', 'Quantity', 'Deadline', 'Actions'].map((header) => (
-                            <th
-                              key={header}
-                              className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider"
-                            >
-                              {header}
-                            </th>
-                          ))}
+                          <th className="px-6 py-4 align-middle text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Order #</th>
+                          <th className="px-6 py-4 align-middle text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Product</th>
+                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Status</th>
+                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Priority</th>
+                          <th className="px-6 py-4 align-middle text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Assigned To</th>
+                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Quantity</th>
+                          <th className="px-6 py-4 align-middle text-right text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Deadline</th>
+                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <StaggerChildren staggerDelay={0.03}>
-                          {orders.map((order, index) => (
+                          {orders.map((order) => (
                             <motion.tr
                               key={order._id}
-                              variants={{
-                                hidden: { opacity: 0, x: -20 },
-                                visible: { opacity: 1, x: 0 },
-                              }}
-                              className="hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-colors group"
+                              variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}
+                              className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group align-middle"
                               onClick={() => router.push(`/orders/${order._id}`)}
-                              whileHover={{ scale: 1.005 }}
+                              whileHover={{ scale: 1.002 }}
                             >
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                                  {order.order_number}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4">
-                                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                  {order.product_id?.name || 'N/A'}
-                                </div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
-                                  {order.product_id?.reference}
+                              <td className="px-6 py-4 align-middle">
+                                <div className="min-w-0">
+                                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 truncate block">{order.order_number}</span>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full ${getStatusColor(order.status)}`}>
-                                  {order.status.replace('_', ' ')}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-3 py-1.5 text-xs font-bold rounded-lg ${getPriorityColor(order.priority)}`}>
-                                  {priorityToLabel(order.priority).toUpperCase()}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                                  <MdPerson className="text-gray-400" />
-                                  {order.assigned_to?.username || <span className="italic text-gray-400">Unassigned</span>}
+
+                              <td className="px-6 py-4 align-middle">
+                                <div className="flex flex-col gap-1 min-w-0">
+                                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{order.product_id?.name || 'N/A'}</div>
+                                  <div className="text-xs text-gray-600 dark:text-gray-400 truncate">{order.product_id?.reference}</div>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                                  {order.quantity}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                                  <MdCalendarToday className="text-gray-400" />
-                                  {formatDate(order.deadline)}
+
+                              <td className="px-6 py-4 align-middle">
+                                <div className="flex items-center justify-center">
+                                  <span className={`px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full ${getStatusColor(order.status)}`}>{order.status.replace('_', ' ')}</span>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
+
+                              <td className="px-6 py-4 align-middle">
+                                <div className="flex items-center justify-center">
+                                  <span className={`px-3 py-1.5 text-xs font-bold rounded-lg ${getPriorityColor(order.priority)}`}>{priorityToLabel(order.priority).toUpperCase()}</span>
+                                </div>
+                              </td>
+
+                              <td className="px-6 py-4 align-middle">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <MdPerson className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                  <div className="text-sm text-gray-900 dark:text-gray-200 truncate">{order.assigned_to?.username || <span className="italic text-gray-500 dark:text-gray-400">Unassigned</span>}</div>
+                                </div>
+                              </td>
+
+                              <td className="px-6 py-4 align-middle text-center">
+                                <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{order.quantity}</div>
+                              </td>
+
+                              <td className="px-6 py-4 align-middle">
+                                <div className="flex items-center justify-end min-w-0 text-sm text-gray-900 dark:text-gray-200">
+                                  <MdCalendarToday className="text-gray-500 dark:text-gray-400 mr-2 flex-shrink-0" />
+                                  <span className="truncate">{formatDate(order.deadline)}</span>
+                                </div>
+                              </td>
+
+                              <td className="px-6 py-4 align-middle text-center">
                                 <motion.button
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     router.push(`/orders/${order._id}`);
                                   }}
-                                  whileHover={{ scale: 1.1 }}
-                                  whileTap={{ scale: 0.9 }}
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
                                   className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold"
                                 >
                                   <MdVisibility />
@@ -353,10 +366,10 @@ export default function OrdersPage() {
                       </tbody>
                     </table>
                   </div>
-                  
+
                   {/* Orders count */}
-                  <div className="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                    <p className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+                  <div className="bg-gray-100 dark:bg-gray-800 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Showing <span className="text-blue-600 dark:text-blue-400">{orders.length}</span> order{orders.length !== 1 ? 's' : ''}
                     </p>
                   </div>
