@@ -349,15 +349,15 @@ export default function OrdersPage() {
                       </colgroup>
 
                       <thead className="bg-gray-800 dark:bg-gray-900">
-                        <tr>
-                          <th className="px-6 py-4 align-middle text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Order #</th>
-                          <th className="px-6 py-4 align-middle text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Product</th>
-                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Status</th>
-                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Priority</th>
-                          <th className="px-6 py-4 align-middle text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Assigned To</th>
-                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Quantity</th>
-                          <th className="px-6 py-4 align-middle text-right text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Deadline</th>
-                          <th className="px-6 py-4 align-middle text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap">Actions</th>
+                        <tr className="h-14">
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Order #</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Product</th>
+                          <th className="px-6 py-4 text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Status</th>
+                          <th className="px-6 py-4 text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Priority</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Assigned To</th>
+                          <th className="px-6 py-4 text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Quantity</th>
+                          <th className="px-6 py-4 text-right text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Deadline</th>
+                          <th className="px-6 py-4 text-center text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle">Actions</th>
                         </tr>
                       </thead>
 
@@ -367,66 +367,68 @@ export default function OrdersPage() {
                             <motion.tr
                               key={order._id}
                               variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}
-                              className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group align-middle"
+                              className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group h-16"
                               onClick={() => router.push(`/orders/${order._id}`)}
                               whileHover={{ scale: 1.002 }}
                             >
                               <td className="px-6 py-4 align-middle">
                                 <div className="min-w-0">
-                                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 truncate block">{order.order_number}</span>
+                                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 truncate block whitespace-nowrap">{order.order_number}</span>
                                 </div>
                               </td>
 
                               <td className="px-6 py-4 align-middle">
                                 <div className="flex flex-col gap-1 min-w-0">
-                                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{order.product_id?.name || 'N/A'}</div>
-                                  <div className="text-xs text-gray-600 dark:text-gray-400 truncate">{order.product_id?.reference}</div>
+                                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate whitespace-nowrap">{order.product_id?.name || 'N/A'}</div>
+                                  <div className="text-xs text-gray-600 dark:text-gray-400 truncate whitespace-nowrap">{order.product_id?.reference}</div>
                                 </div>
                               </td>
 
-                              <td className="px-6 py-4 align-middle">
+                              <td className="px-6 py-4 align-middle text-center">
                                 <div className="flex items-center justify-center">
-                                  <span className={`px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full ${getStatusColor(order.status)}`}>{order.status.replace('_', ' ')}</span>
+                                  <span className={`px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full whitespace-nowrap ${getStatusColor(order.status)}`}>{order.status.replace('_', ' ')}</span>
                                 </div>
                               </td>
 
-                              <td className="px-6 py-4 align-middle">
+                              <td className="px-6 py-4 align-middle text-center">
                                 <div className="flex items-center justify-center">
-                                  <span className={`px-3 py-1.5 text-xs font-bold rounded-lg ${getPriorityColor(order.priority)}`}>{priorityToLabel(order.priority).toUpperCase()}</span>
+                                  <span className={`px-3 py-1.5 text-xs font-bold rounded-lg whitespace-nowrap ${getPriorityColor(order.priority)}`}>{priorityToLabel(order.priority).toUpperCase()}</span>
                                 </div>
                               </td>
 
                               <td className="px-6 py-4 align-middle">
                                 <div className="flex items-center gap-2 min-w-0">
                                   <MdPerson className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                                  <div className="text-sm text-gray-900 dark:text-gray-200 truncate">{order.assigned_to?.username || <span className="italic text-gray-500 dark:text-gray-400">Unassigned</span>}</div>
+                                  <div className="text-sm text-gray-900 dark:text-gray-200 truncate whitespace-nowrap">{order.assigned_to?.username || <span className="italic text-gray-500 dark:text-gray-400">Unassigned</span>}</div>
                                 </div>
                               </td>
 
                               <td className="px-6 py-4 align-middle text-center">
-                                <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{order.quantity}</div>
+                                <div className="text-sm font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">{order.quantity}</div>
                               </td>
 
-                              <td className="px-6 py-4 align-middle">
-                                <div className="flex items-center justify-end min-w-0 text-sm text-gray-900 dark:text-gray-200">
-                                  <MdCalendarToday className="text-gray-500 dark:text-gray-400 mr-2 flex-shrink-0" />
-                                  <span className="truncate">{formatDate(order.deadline)}</span>
+                              <td className="px-6 py-4 align-middle text-right">
+                                <div className="flex items-center justify-end gap-2 min-w-0">
+                                  <MdCalendarToday className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                  <span className="text-sm text-gray-900 dark:text-gray-200 truncate whitespace-nowrap">{formatDate(order.deadline)}</span>
                                 </div>
                               </td>
 
                               <td className="px-6 py-4 align-middle text-center">
-                                <motion.button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    router.push(`/orders/${order._id}`);
-                                  }}
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold"
-                                >
-                                  <MdVisibility />
-                                  View
-                                </motion.button>
+                                <div className="flex items-center justify-center">
+                                  <motion.button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      router.push(`/orders/${order._id}`);
+                                    }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold whitespace-nowrap"
+                                  >
+                                    <MdVisibility />
+                                    View
+                                  </motion.button>
+                                </div>
                               </td>
                             </motion.tr>
                           ))}

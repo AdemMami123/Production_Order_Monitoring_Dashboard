@@ -49,6 +49,7 @@ class AuthService {
 
     // Hash password
     const password_hash = await this.hashPassword(password);
+    console.log('[AUTH] Registering user:', username, 'Password hash length:', password_hash.length);
 
     // Create user
     const user = await User.create({
@@ -57,6 +58,8 @@ class AuthService {
       password_hash,
       role,
     });
+
+    console.log('[AUTH] User created successfully:', user._id);
 
     // Generate token
     const token = this.generateToken({
@@ -82,6 +85,8 @@ class AuthService {
 
   // Login user
   static async login({ email, username, password }) {
+    console.log('[AUTH] Login attempt - email:', email, 'username:', username);
+    
     // Find user by email or username
     let user;
     if (email) {
@@ -91,8 +96,11 @@ class AuthService {
     }
     
     if (!user) {
+      console.log('[AUTH] User not found');
       throw new Error('Invalid credentials');
     }
+
+    console.log('[AUTH] User found:', user.username, 'Active:', user.is_active, 'Has password_hash:', !!user.password_hash);
 
     // Check if user is active
     if (!user.is_active) {
@@ -101,6 +109,8 @@ class AuthService {
 
     // Compare password
     const isPasswordValid = await this.comparePassword(password, user.password_hash);
+    console.log('[AUTH] Password valid:', isPasswordValid);
+    
     if (!isPasswordValid) {
       throw new Error('Invalid credentials');
     }

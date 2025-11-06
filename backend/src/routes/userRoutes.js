@@ -51,6 +51,22 @@ router.put(
 );
 
 /**
+ * @route   PATCH /api/users/:id
+ * @desc    Update user (partial update)
+ * @access  Private (Admin only)
+ */
+router.patch(
+  '/:id',
+  authenticate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateUserUpdate,
+  handleValidationErrors,
+  isAdmin,
+  userController.updateUser
+);
+
+/**
  * @route   PATCH /api/users/:id/deactivate
  * @desc    Deactivate user (soft delete)
  * @access  Private (Admin only)

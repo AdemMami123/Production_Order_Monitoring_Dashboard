@@ -310,13 +310,13 @@ export default function ProductsPage() {
           <ScaleIn delay={0.2}>
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full table-auto">
                   <thead className="bg-gray-800 dark:bg-gray-900">
-                    <tr>
+                    <tr className="h-14">
                       {['Product Name', 'Reference', 'Unit', 'Description', 'Status', 'Actions'].map((header) => (
                         <th
                           key={header}
-                          className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider"
+                          className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle"
                         >
                           {header}
                         </th>
@@ -330,29 +330,29 @@ export default function ProductsPage() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.03 }}
-                        className={`hover:bg-green-50 dark:hover:bg-gray-700 transition-colors ${
+                        className={`hover:bg-green-50 dark:hover:bg-gray-700 transition-colors h-16 ${
                           !product.is_active ? 'opacity-60' : ''
                         }`}
                       >
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{product.name}</span>
+                        <td className="px-6 py-4 align-middle whitespace-nowrap">
+                          <span className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate block">{product.name}</span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 align-middle whitespace-nowrap">
                           <span className="text-sm font-mono text-blue-600 dark:text-blue-400">{product.reference}</span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-lg">
+                        <td className="px-6 py-4 align-middle whitespace-nowrap">
+                          <span className="inline-flex text-sm font-semibold text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-lg">
                             {product.unit}
                           </span>
                         </td>
-                        <td className="px-6 py-4 max-w-xs">
+                        <td className="px-6 py-4 align-middle max-w-xs">
                           <span className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                             {product.description || '-'}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 align-middle whitespace-nowrap">
                           <span
-                            className={`flex items-center gap-1 w-fit px-3 py-1.5 text-xs font-bold rounded-full ${
+                            className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-full ${
                               product.is_active
                                 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                                 : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
@@ -362,8 +362,8 @@ export default function ProductsPage() {
                             {product.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex gap-2">
+                        <td className="px-6 py-4 align-middle whitespace-nowrap">
+                          <div className="flex items-center gap-2">
                             <motion.button
                               onClick={() => handleEdit(product)}
                               whileHover={{ scale: 1.1 }}

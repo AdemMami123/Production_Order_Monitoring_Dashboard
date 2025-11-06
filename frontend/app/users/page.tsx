@@ -201,13 +201,13 @@ export default function UsersPage() {
           <ScaleIn delay={0.2}>
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full table-auto">
                   <thead className="bg-gray-800 dark:bg-gray-900">
-                    <tr>
+                    <tr className="h-14">
                       {['User', 'Email', 'Role', 'Status', 'Created', 'Actions'].map((header) => (
                         <th
                           key={header}
-                          className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider"
+                          className="px-6 py-4 text-left text-xs font-bold text-gray-100 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap align-middle"
                         >
                           {header}
                         </th>
@@ -227,38 +227,38 @@ export default function UsersPage() {
                               hidden: { opacity: 0, x: -20 },
                               visible: { opacity: 1, x: 0 },
                             }}
-                            className="hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors"
+                            className="hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors h-16"
                           >
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-6 py-4 align-middle whitespace-nowrap">
                               <div className="flex items-center gap-3">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getRoleBadgeColor(u.role)}`}>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${getRoleBadgeColor(u.role)}`}>
                                   <MdPerson className="text-xl" />
                                 </div>
-                                <div>
-                                  <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                                <div className="min-w-0">
+                                  <div className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
                                     {u.username}
                                     {isCurrentUser && (
-                                      <span className="ml-2 text-xs text-blue-600 dark:text-blue-400">(You)</span>
+                                      <span className="ml-2 text-xs text-blue-600 dark:text-blue-400 whitespace-nowrap">(You)</span>
                                     )}
                                   </div>
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center gap-2 text-sm text-gray-900 dark:text-gray-200">
-                                <MdEmail className="text-gray-500 dark:text-gray-400" />
-                                {u.email}
+                            <td className="px-6 py-4 align-middle whitespace-nowrap">
+                              <div className="flex items-center gap-2 text-sm text-gray-900 dark:text-gray-200 min-w-0">
+                                <MdEmail className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                <span className="truncate">{u.email}</span>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className={`flex items-center gap-2 w-fit px-3 py-1.5 text-xs font-bold rounded-full ${getRoleBadgeColor(u.role)}`}>
+                            <td className="px-6 py-4 align-middle whitespace-nowrap">
+                              <div className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-full ${getRoleBadgeColor(u.role)}`}>
                                 <RoleIcon />
                                 {u.role.toUpperCase()}
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-6 py-4 align-middle whitespace-nowrap">
                               <div
-                                className={`flex items-center gap-1 w-fit px-3 py-1.5 text-xs font-bold rounded-full ${
+                                className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-full ${
                                   u.is_active
                                     ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                                     : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
@@ -268,16 +268,18 @@ export default function UsersPage() {
                                 {u.is_active ? 'Active' : 'Inactive'}
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                              {formatDate(u.createdAt || u.created_at)}
+                            <td className="px-6 py-4 align-middle whitespace-nowrap">
+                              <span className="text-sm text-gray-900 dark:text-gray-200">
+                                {formatDate(u.createdAt || u.created_at)}
+                              </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-6 py-4 align-middle whitespace-nowrap">
                               <motion.button
                                 onClick={() => handleToggleActive(u._id || u.id || '', u.is_active)}
                                 disabled={isCurrentUser}
                                 whileHover={!isCurrentUser ? { scale: 1.05 } : {}}
                                 whileTap={!isCurrentUser ? { scale: 0.95 } : {}}
-                                className={`flex items-center gap-1 px-3 py-2 rounded-lg font-semibold transition-colors ${
+                                className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg font-semibold transition-colors ${
                                   isCurrentUser
                                     ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
                                     : u.is_active
