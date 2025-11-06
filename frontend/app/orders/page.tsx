@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import orderService from '@/lib/orderService';
+import userService from '@/lib/userService';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import { FadeIn, ScaleIn, StaggerChildren } from '@/components/animations';
@@ -47,11 +48,15 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [assignableUsers, setAssignableUsers] = useState<any[]>([]);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
+  const [assignedToFilter, setAssignedToFilter] = useState('');
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -62,9 +67,19 @@ export default function OrdersPage() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchOrders();
+      loadUsers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, statusFilter, searchQuery, priorityFilter]);
+  }, [isAuthenticated, statusFilter, searchQuery, priorityFilter, assignedToFilter, startDateFilter, endDateFilter]);
+
+  const loadUsers = async () => {
+    try {
+      const users = await userService.getAssignableUsers();
+      setAssignableUsers(users || []);
+    } catch (err) {
+      // Silent fail - users filter is optional
+    }
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -74,6 +89,9 @@ export default function OrdersPage() {
       if (statusFilter) filters.status = statusFilter;
       if (searchQuery) filters.search = searchQuery;
       if (priorityFilter) filters.priority = priorityFilter;
+      if (assignedToFilter) filters.assigned_to = assignedToFilter;
+      if (startDateFilter) filters.start_date = startDateFilter;
+      if (endDateFilter) filters.end_date = endDateFilter;
 
       const data = await orderService.getAllOrders(filters);
       const ordersList = Array.isArray(data) ? data : data.orders || [];
@@ -143,6 +161,9 @@ export default function OrdersPage() {
     setStatusFilter('');
     setSearchQuery('');
     setPriorityFilter('');
+    setAssignedToFilter('');
+    setStartDateFilter('');
+    setEndDateFilter('');
   };
 
   if (authLoading || !isAuthenticated) {
@@ -189,8 +210,8 @@ export default function OrdersPage() {
               <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Filters</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+              <div className="lg:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   <MdSearch className="inline mr-1" />
                   Search
@@ -234,6 +255,25 @@ export default function OrdersPage() {
                 </select>
               </div>
 
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <MdPerson className="inline mr-1" />
+                  Assigned To
+                </label>
+                <select
+                  value={assignedToFilter}
+                  onChange={(e) => setAssignedToFilter(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                >
+                  <option value="">All Users</option>
+                  {assignableUsers.map((u) => (
+                    <option key={u._id} value={u._id}>
+                      {u.username}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="flex items-end">
                 <motion.button
                   onClick={clearFilters}
@@ -244,6 +284,34 @@ export default function OrdersPage() {
                   <MdClear />
                   Clear Filters
                 </motion.button>
+              </div>
+            </div>
+
+            {/* Date Range Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <MdCalendarToday className="inline mr-1" />
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={startDateFilter}
+                  onChange={(e) => setStartDateFilter(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <MdCalendarToday className="inline mr-1" />
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  value={endDateFilter}
+                  onChange={(e) => setEndDateFilter(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                />
               </div>
             </div>
           </div>
