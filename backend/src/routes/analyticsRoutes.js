@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const analyticsController = require('../controllers/analyticsController');
 const { authenticate } = require('../middleware/auth');
+const { analyticsLimiter } = require('../middleware/rateLimiter');
 
 // Middleware to check if user is admin or manager
 const canViewAnalytics = (req, res, next) => {
@@ -15,8 +16,9 @@ const canViewAnalytics = (req, res, next) => {
   }
 };
 
-// All routes require authentication and admin/manager role
+// All routes require authentication, rate limiting, and admin/manager role
 router.use(authenticate);
+router.use(analyticsLimiter);
 router.use(canViewAnalytics);
 
 // @route   GET /api/analytics/kpis

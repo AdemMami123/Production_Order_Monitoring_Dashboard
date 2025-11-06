@@ -9,6 +9,17 @@ const {
   updateOrderValidation,
   idValidation,
 } = require('../utils/validators');
+const { apiLimiter, orderCreationLimiter } = require('../middleware/rateLimiter');
+const {
+  validateOrderCreation,
+  validateOrderUpdate,
+  validateOrderStatusUpdate,
+  validateOrderAssignment,
+  validateOrderBlock,
+  validateOrderUnblock,
+  validateMongoId,
+  handleValidationErrors,
+} = require('../middleware/validation');
 
 /**
  * @route   POST /api/orders
@@ -19,8 +30,9 @@ router.post(
   '/',
   authenticate,
   canManageOrders,
-  createOrderValidation,
-  validate,
+  orderCreationLimiter,
+  validateOrderCreation,
+  handleValidationErrors,
   orderController.createOrder
 );
 
@@ -30,14 +42,14 @@ router.post(
  * @access  Private (All authenticated users)
  * @query   status, product_id, assigned_to, created_by, priority, start_date, end_date, search
  */
-router.get('/', authenticate, orderController.getAllOrders);
+router.get('/', authenticate, apiLimiter, orderController.getAllOrders);
 
 /**
  * @route   GET /api/orders/statistics
  * @desc    Get order statistics
  * @access  Private (All authenticated users)
  */
-router.get('/statistics', authenticate, orderController.getOrderStatistics);
+router.get('/statistics', authenticate, apiLimiter, orderController.getOrderStatistics);
 
 /**
  * @route   GET /api/orders/:id
@@ -47,8 +59,9 @@ router.get('/statistics', authenticate, orderController.getOrderStatistics);
 router.get(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   canViewOrder,
   orderController.getOrderById
 );
@@ -61,9 +74,10 @@ router.get(
 router.put(
   '/:id',
   authenticate,
-  idValidation,
-  updateOrderValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateOrderUpdate,
+  handleValidationErrors,
   canUpdateOrder,
   orderController.updateOrder
 );
@@ -76,8 +90,10 @@ router.put(
 router.patch(
   '/:id/status',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateOrderStatusUpdate,
+  handleValidationErrors,
   orderController.updateOrderStatus
 );
 
@@ -89,8 +105,10 @@ router.patch(
 router.patch(
   '/:id/assign',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateOrderAssignment,
+  handleValidationErrors,
   canManageOrders,
   orderController.assignOrder
 );
@@ -103,8 +121,10 @@ router.patch(
 router.patch(
   '/:id/block',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateOrderBlock,
+  handleValidationErrors,
   canManageOrders,
   orderController.blockOrder
 );
@@ -117,8 +137,10 @@ router.patch(
 router.patch(
   '/:id/unblock',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateOrderUnblock,
+  handleValidationErrors,
   canManageOrders,
   orderController.unblockOrder
 );
@@ -131,8 +153,9 @@ router.patch(
 router.patch(
   '/:id/complete',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   orderController.completeOrder
 );
 
@@ -144,8 +167,9 @@ router.patch(
 router.delete(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   canManageOrders,
   orderController.deleteOrder
 );

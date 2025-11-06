@@ -9,6 +9,13 @@ const {
   updateProductValidation,
   idValidation,
 } = require('../utils/validators');
+const { apiLimiter } = require('../middleware/rateLimiter');
+const {
+  validateProductCreation,
+  validateProductUpdate,
+  validateMongoId,
+  handleValidationErrors,
+} = require('../middleware/validation');
 
 /**
  * @route   POST /api/products
@@ -19,8 +26,9 @@ router.post(
   '/',
   authenticate,
   isAdminOrManager,
-  createProductValidation,
-  validate,
+  apiLimiter,
+  validateProductCreation,
+  handleValidationErrors,
   productController.createProduct
 );
 
@@ -30,7 +38,7 @@ router.post(
  * @access  Private (All authenticated users)
  * @query   is_active, search
  */
-router.get('/', authenticate, productController.getAllProducts);
+router.get('/', authenticate, apiLimiter, productController.getAllProducts);
 
 /**
  * @route   GET /api/products/:id
@@ -40,8 +48,9 @@ router.get('/', authenticate, productController.getAllProducts);
 router.get(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   productController.getProductById
 );
 
@@ -53,9 +62,10 @@ router.get(
 router.put(
   '/:id',
   authenticate,
-  idValidation,
-  updateProductValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateProductUpdate,
+  handleValidationErrors,
   isAdminOrManager,
   productController.updateProduct
 );
@@ -68,8 +78,9 @@ router.put(
 router.patch(
   '/:id/deactivate',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   isAdminOrManager,
   productController.deactivateProduct
 );
@@ -82,8 +93,9 @@ router.patch(
 router.delete(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   isAdmin,
   productController.deleteProduct
 );

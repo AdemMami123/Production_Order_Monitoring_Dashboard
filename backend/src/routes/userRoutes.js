@@ -5,13 +5,19 @@ const { authenticate } = require('../middleware/auth');
 const { isAdmin, isSelfOrAdmin } = require('../middleware/authorize');
 const { idValidation } = require('../utils/validators');
 const { validate } = require('../middleware/errorHandler');
+const { apiLimiter, userCreationLimiter } = require('../middleware/rateLimiter');
+const {
+  validateUserUpdate,
+  validateMongoId,
+  handleValidationErrors,
+} = require('../middleware/validation');
 
 /**
  * @route   GET /api/users
  * @desc    Get all users
  * @access  Private (Admin only)
  */
-router.get('/', authenticate, isAdmin, userController.getAllUsers);
+router.get('/', authenticate, isAdmin, apiLimiter, userController.getAllUsers);
 
 /**
  * @route   GET /api/users/:id
@@ -21,8 +27,9 @@ router.get('/', authenticate, isAdmin, userController.getAllUsers);
 router.get(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   isSelfOrAdmin,
   userController.getUserById
 );
@@ -35,8 +42,10 @@ router.get(
 router.put(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  validateUserUpdate,
+  handleValidationErrors,
   isAdmin,
   userController.updateUser
 );
@@ -49,8 +58,9 @@ router.put(
 router.patch(
   '/:id/deactivate',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   isAdmin,
   userController.deactivateUser
 );
@@ -63,8 +73,9 @@ router.patch(
 router.delete(
   '/:id',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   isAdmin,
   userController.deleteUser
 );
@@ -77,8 +88,9 @@ router.delete(
 router.get(
   '/:id/statistics',
   authenticate,
-  idValidation,
-  validate,
+  apiLimiter,
+  validateMongoId('id'),
+  handleValidationErrors,
   isSelfOrAdmin,
   userController.getUserStatistics
 );

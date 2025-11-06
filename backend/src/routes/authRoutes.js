@@ -8,34 +8,36 @@ const {
   loginValidation,
   updatePasswordValidation,
 } = require('../utils/validators');
+const { authLimiter, apiLimiter } = require('../middleware/rateLimiter');
+const { validateUserRegistration, validateUserLogin, handleValidationErrors } = require('../middleware/validation');
 
 /**
  * @route   POST /api/auth/register
  * @desc    Register a new user
  * @access  Public (or Admin only - depending on requirements)
  */
-router.post('/register', registerValidation, validate, authController.register);
+router.post('/register', apiLimiter, validateUserRegistration, handleValidationErrors, authController.register);
 
 /**
  * @route   POST /api/auth/login
  * @desc    Login user and get JWT token
  * @access  Public
  */
-router.post('/login', loginValidation, validate, authController.login);
+router.post('/login', authLimiter, validateUserLogin, handleValidationErrors, authController.login);
 
 /**
  * @route   POST /api/auth/logout
  * @desc    Logout user (client-side token removal)
  * @access  Private
  */
-router.post('/logout', authenticate, authController.logout);
+router.post('/logout', apiLimiter, authenticate, authController.logout);
 
 /**
  * @route   GET /api/auth/profile
  * @desc    Get current user profile
  * @access  Private
  */
-router.get('/profile', authenticate, authController.getProfile);
+router.get('/profile', apiLimiter, authenticate, authController.getProfile);
 
 /**
  * @route   PUT /api/auth/password
@@ -44,6 +46,7 @@ router.get('/profile', authenticate, authController.getProfile);
  */
 router.put(
   '/password',
+  apiLimiter,
   authenticate,
   updatePasswordValidation,
   validate,
@@ -55,6 +58,6 @@ router.put(
  * @desc    Verify if JWT token is valid
  * @access  Private
  */
-router.get('/verify', authenticate, authController.verifyToken);
+router.get('/verify', apiLimiter, authenticate, authController.verifyToken);
 
 module.exports = router;
