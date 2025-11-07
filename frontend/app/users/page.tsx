@@ -214,8 +214,12 @@ export default function UsersPage() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    <StaggerChildren staggerDelay={0.03}>
+                  <motion.tbody
+                    className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+                    initial="hidden"
+                    animate="visible"
+                    variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.03 } } }}
+                  >
                       {users.map((u) => {
                         const RoleIcon = getRoleIcon(u.role);
                         const isCurrentUser = u._id === user?._id || u.id === user?.id;
@@ -294,8 +298,7 @@ export default function UsersPage() {
                           </motion.tr>
                         );
                       })}
-                    </StaggerChildren>
-                  </tbody>
+                  </motion.tbody>
                 </table>
               </div>
             </div>

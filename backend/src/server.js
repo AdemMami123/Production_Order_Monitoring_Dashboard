@@ -9,12 +9,17 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const odooRoutes = require('./routes/odooRoutes');
+const syncRoutes = require('./routes/syncRoutes');
 
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 // Import database configuration
 const connectDB = require('./config/database');
+
+// Import Odoo scheduler
+const odooScheduler = require('./services/odooScheduler');
 
 // Initialize express app
 const app = express();
@@ -43,6 +48,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/odoo', odooRoutes);
+app.use('/api/sync', syncRoutes);
 
 // Welcome route
 app.get('/', (req, res) => {
@@ -57,6 +64,8 @@ app.get('/', (req, res) => {
       products: '/api/products',
       orders: '/api/orders',
       analytics: '/api/analytics',
+      odoo: '/api/odoo',
+      sync: '/api/sync',
     },
   });
 });
@@ -84,11 +93,19 @@ const startServer = async () => {
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`📊 CORS enabled for: ${process.env.CORS_ORIGIN || 'http://localhost:3000'}`);
     console.log('=====================================\n');
+    
+    // Start Odoo auto-sync scheduler (if enabled)
+    try {
+      odooScheduler.start();
+    } catch (error) {
+      console.error('[ODOO SCHEDULER] Failed to start:', error.message);
+    }
   });
 
   // Graceful shutdown
   process.on('SIGTERM', () => {
     console.log('SIGTERM signal received: closing HTTP server');
+    odooScheduler.stop(); // Stop scheduler
     server.close(() => {
       console.log('HTTP server closed');
       process.exit(0);
@@ -97,6 +114,7 @@ const startServer = async () => {
 
   process.on('SIGINT', () => {
     console.log('\nSIGINT signal received: closing HTTP server');
+    odooScheduler.stop(); // Stop scheduler
     server.close(() => {
       console.log('HTTP server closed');
       process.exit(0);

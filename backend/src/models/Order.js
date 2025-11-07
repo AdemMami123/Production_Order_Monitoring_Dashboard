@@ -83,6 +83,15 @@ const orderSchema = new mongoose.Schema({
     type: String,
   },
   logs: [orderLogSchema], // Embedded logs
+  // Odoo Integration Fields
+  odoo_id: {
+    type: Number,
+    index: true,
+    sparse: true,
+  },
+  last_synced_at: {
+    type: Date,
+  },
 }, {
   timestamps: true,
 });

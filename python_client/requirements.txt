@@ -1,0 +1,14 @@
+# Odoo Python Client Requirements
+# =================================
+
+# Core dependencies
+requests>=2.31.0        # For JSON-RPC HTTP requests
+
+# Optional dependencies
+python-dotenv>=1.0.0    # For loading .env files (recommended)
+
+# Development dependencies (optional)
+pytest>=7.4.0          # For running tests
+black>=23.0.0          # For code formatting
+flake8>=6.0.0          # For linting
+

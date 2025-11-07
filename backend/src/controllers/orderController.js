@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const odooSyncService = require('../services/odooSyncService');
 
 // Create new order
 const createOrder = asyncHandler(async (req, res) => {
@@ -76,6 +77,16 @@ const createOrder = asyncHandler(async (req, res) => {
     new_status: 'pending',
     details: `Order created by ${req.user.username}`,
   });
+
+  // ========== ODOO SYNC: Create order in Odoo ==========
+  try {
+    await odooSyncService.createOrderInOdoo(order);
+    console.log(`[ORDER CONTROLLER] Order ${order.order_number} synced to Odoo`);
+  } catch (error) {
+    console.error(`[ORDER CONTROLLER] Failed to sync order to Odoo:`, error.message);
+    // Don't fail the request - order is created locally
+  }
+  // ====================================================
 
   // Get order with details
   const orderDetails = await Order.findByIdWithDetails(order.id);
@@ -159,10 +170,26 @@ const getOrderById = asyncHandler(async (req, res) => {
   });
 });
 
+// Helper: normalize incoming status values (allow 'completed' as alias for 'done')
+function normalizeStatus(status) {
+  if (!status) return status;
+  const s = String(status).toLowerCase();
+  if (s === 'completed' || s === 'complete') return 'done';
+  if (s === 'in progress' || s === 'in_progress' || s === 'inprogress') return 'in_progress';
+  if (s === 'blocked') return 'blocked';
+  if (s === 'pending') return 'pending';
+  return status;
+}
+
 // Update order
 const updateOrder = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const updates = req.body;
+  const updates = { ...req.body };
+
+  // Normalize status if provided (accept synonyms from frontend)
+  if (updates.status) {
+    updates.status = normalizeStatus(updates.status);
+  }
 
   // Get existing order
   const existingOrder = await Order.findById(id);
@@ -222,6 +249,17 @@ const updateOrder = asyncHandler(async (req, res) => {
     details: `Order updated by ${req.user.username}`,
   });
 
+  // ========== ODOO SYNC: Update order in Odoo ==========
+  try {
+    const fullOrder = await Order.findById(id);
+    await odooSyncService.updateOrderInOdoo(fullOrder);
+    console.log(`[ORDER CONTROLLER] Order ${fullOrder.order_number} updated in Odoo`);
+  } catch (error) {
+    console.error(`[ORDER CONTROLLER] Failed to sync order update to Odoo:`, error.message);
+    // Don't fail the request - order is updated locally
+  }
+  // ====================================================
+
   // Get updated order with details
   const orderDetails = await Order.findByIdWithDetails(id);
 
@@ -235,7 +273,10 @@ const updateOrder = asyncHandler(async (req, res) => {
 // Update order status
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { status, notes } = req.body;
+  let { status, notes } = req.body;
+
+  // Accept synonyms (e.g. 'completed') from client
+  status = normalizeStatus(status);
 
   const existingOrder = await Order.findById(id);
   if (!existingOrder) {
@@ -277,6 +318,17 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     new_status: status,
     details: notes || `Status changed from ${existingOrder.status} to ${status} by ${req.user.username}`,
   });
+
+  // ========== ODOO SYNC: Update order status in Odoo ==========
+  try {
+    const fullOrder = await Order.findById(id);
+    await odooSyncService.updateOrderInOdoo(fullOrder);
+    console.log(`[ORDER CONTROLLER] Order status updated in Odoo: ${fullOrder.order_number}`);
+  } catch (error) {
+    console.error(`[ORDER CONTROLLER] Failed to sync status update to Odoo:`, error.message);
+    // Don't fail the request - order is updated locally
+  }
+  // ===========================================================
 
   // Get updated order with details
   const orderDetails = await Order.findByIdWithDetails(id);

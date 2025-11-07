@@ -361,8 +361,15 @@ export default function OrdersPage() {
                         </tr>
                       </thead>
 
-                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        <StaggerChildren staggerDelay={0.03}>
+                      <motion.tbody
+                        className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                          hidden: { opacity: 0 },
+                          visible: { opacity: 1, transition: { staggerChildren: 0.03 } },
+                        }}
+                      >
                           {orders.map((order) => (
                             <motion.tr
                               key={order._id}
@@ -432,8 +439,7 @@ export default function OrdersPage() {
                               </td>
                             </motion.tr>
                           ))}
-                        </StaggerChildren>
-                      </tbody>
+                      </motion.tbody>
                     </table>
                   </div>
 

@@ -25,6 +25,15 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  // Odoo Integration Fields
+  odoo_id: {
+    type: Number,
+    index: true,
+    sparse: true,
+  },
+  last_synced_at: {
+    type: Date,
+  },
 }, {
   timestamps: true,
 });
